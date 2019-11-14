@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-	or := optresolver.OptionResolver{
+	or := &optresolver.OptionResolver{
 		Options: nil,
 		Help:    "This is a program to test option resolver",
 	}
 
-	optresolver.AddOption(&or, optresolver.Option{
+	or.AddOption(optresolver.Option{
 		Short:    "n",
 		Long:     "name",
 		Required: false,
@@ -20,7 +20,7 @@ func main() {
 		Help:     "A name to display",
 	})
 
-	optresolver.AddOption(&or, optresolver.Option{
+	or.AddOption(optresolver.Option{
 		Short:    "t",
 		Long:     "test",
 		Required: false,
@@ -28,7 +28,7 @@ func main() {
 		Help:     "A test option",
 	})
 
-	optresolver.AddOption(&or, optresolver.Option{
+	or.AddOption(optresolver.Option{
 		Short:    "r",
 		Long:     "required",
 		Required: true,
@@ -36,7 +36,7 @@ func main() {
 		Help:     "A required test option",
 	})
 
-	optresolver.AddOption(&or, optresolver.Option{
+	or.AddOption(optresolver.Option{
 		Short:    "z",
 		Long:     "zest",
 		Required: false,
@@ -44,7 +44,7 @@ func main() {
 		Help:     "Fo further implementation",
 	})
 
-	opt, err := optresolver.Parse(or, os.Args)
+	opt, err := or.Parse(os.Args)
 
 	if err != nil {
 		fmt.Println(fmt.Sprintf("%s : %s", or.Help, err))
