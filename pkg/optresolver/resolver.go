@@ -41,5 +41,14 @@ func (or *OptionResolver) Parse(args []string) (map[string]string, error) {
 		}
 	}
 
+	if defOpts, def := hasDefOpts(*or); def {
+		fmt.Println(defOpts)
+		for _, defOpt := range defOpts {
+			if _, exist := res[defOpt.Long]; !exist {
+				res[defOpt.Long] = defOpt.Default
+			}
+		}
+	}
+
 	return res, nil
 }

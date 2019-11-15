@@ -17,6 +17,7 @@ func main() {
 		Long:     "name",
 		Required: false,
 		Type:optresolver.ValueType,
+		Default: "",
 		Help:     "A name to display",
 	})
 
@@ -25,6 +26,7 @@ func main() {
 		Long:     "test",
 		Required: false,
 		Type:optresolver.ValueType,
+		Default: "default_value",
 		Help:     "A test option",
 	})
 
@@ -37,11 +39,11 @@ func main() {
 	})
 
 	or.AddOption(optresolver.Option{
-		Short:    "z",
-		Long:     "zest",
+		Short:    "d",
+		Long:     "default",
 		Required: false,
-		Type:optresolver.BoolType,
-		Help:     "Fo further implementation",
+		Default: "default_value",
+		Help:     "A default value",
 	})
 
 	opt, err := or.Parse(os.Args)

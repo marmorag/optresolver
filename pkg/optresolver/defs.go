@@ -13,6 +13,7 @@ type Option struct {
 	Long string
 	Required bool
 	Type OptionType
+	Default string
 	Help string
 }
 
