@@ -18,8 +18,8 @@ func (or *OptionResolver) Parse(args []string) (map[string]string, error) {
 		if i == 0 {
 			continue
 		}
-		// TODO : handle bool type
 
+		// TODO : handle bool type
 		if i % 2 != 0 {
 			currOpt, isOpt = getOpt(value, *or)
 
