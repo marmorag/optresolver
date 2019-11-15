@@ -14,22 +14,18 @@ func getOpt(value string, resolver OptionResolver) (Option, bool) {
 	return Option{}, false
 }
 
-func hasReqOpts(resolver OptionResolver) (options []Option, hasRequired bool) {
-	for _, opt := range resolver.Options{
-		if opt.Required {
-			hasRequired = true
-			options = append(options, opt)
-		}
+func (or *OptionResolver) hasReqOpts() ([]*Option, bool) {
+	if len(or.requiredOptions) > 0 {
+		return or.requiredOptions, true
 	}
-	return
+
+	return []*Option{}, false
 }
 
-func hasDefOpts(resolver OptionResolver) (options []Option, hasDefaults bool) {
-	for _, opt := range resolver.Options{
-		if opt.Default != "" {
-			hasDefaults = true
-			options = append(options, opt)
-		}
+func (or *OptionResolver) hasDefOpts() ([]*Option, bool) {
+	if len(or.defaultedOptions) > 0 {
+		return or.defaultedOptions, true
 	}
-	return
+
+	return []*Option{}, false
 }

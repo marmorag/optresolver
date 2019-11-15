@@ -7,7 +7,6 @@ const (
 	BoolType OptionType = iota
 )
 
-
 type Option struct {
 	Short string
 	Long string
@@ -20,4 +19,7 @@ type Option struct {
 type OptionResolver struct {
 	Options     []Option
 	Description string
+
+	requiredOptions []*Option
+	defaultedOptions []*Option
 }

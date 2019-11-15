@@ -14,6 +14,14 @@ func (or *OptionResolver) AddOption(opt Option) {
 	}
 
 	or.Options = append(or.Options, opt)
+
+	if opt.Required {
+		or.requiredOptions = append(or.requiredOptions, &opt)
+	}
+
+	if opt.Default != "" {
+		or.defaultedOptions = append(or.defaultedOptions, &opt)
+	}
 }
 
 func (or *OptionResolver) Parse(args []string) (map[string]string, error) {
@@ -45,7 +53,7 @@ func (or *OptionResolver) Parse(args []string) (map[string]string, error) {
 		}
 	}
 
-	if reqOpts, req := hasReqOpts(*or); req {
+	if reqOpts, req := or.hasReqOpts(); req {
 		for _, reqOpt := range reqOpts {
 			if _, exist := res[reqOpt.Long]; !exist && reqOpt.Type != BoolType {
 				return map[string]string{}, errors.New(fmt.Sprintf("The flag : %s is required", reqOpt.Long))
@@ -53,7 +61,7 @@ func (or *OptionResolver) Parse(args []string) (map[string]string, error) {
 		}
 	}
 
-	if defOpts, def := hasDefOpts(*or); def {
+	if defOpts, def := or.hasDefOpts(); def {
 		for _, defOpt := range defOpts {
 			if _, exist := res[defOpt.Long]; !exist {
 				res[defOpt.Long] = defOpt.Default
