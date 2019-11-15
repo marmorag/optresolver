@@ -8,8 +8,8 @@ import (
 
 func main() {
 	or := &optresolver.OptionResolver{
-		Options: nil,
-		Help:    "This is a program to test option resolver",
+		Options:     nil,
+		Description: "This is a program to test option resolver",
 	}
 
 	or.AddOption(optresolver.Option{
@@ -49,7 +49,7 @@ func main() {
 	opt, err := or.Parse(os.Args)
 
 	if err != nil {
-		fmt.Println(fmt.Sprintf("%s : %s", or.Help, err))
+		fmt.Println(fmt.Sprintf("%s : %s", or.Description, err))
 		os.Exit(1)
 	}
 

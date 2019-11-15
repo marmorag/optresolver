@@ -18,6 +18,6 @@ type Option struct {
 }
 
 type OptionResolver struct {
-	Options []Option
-	Help string
+	Options     []Option
+	Description string
 }
