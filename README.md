@@ -1,2 +1,2 @@
 # optresolver
-Go Option Resolver as the php Symfony component
+Go command line Option Resolver
