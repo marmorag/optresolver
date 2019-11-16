@@ -3,9 +3,24 @@ package optresolver_test
 import (
 	"fmt"
 	"github.com/marmorag/optresolver"
+	"io/ioutil"
 	"os"
 	"testing"
 )
+
+func captureOutput(f func()) string {
+	osOut := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	f()
+
+	_ = w.Close()
+	output, _ := ioutil.ReadAll(r)
+
+	os.Stdout = osOut
+	return fmt.Sprintf("%s", output)
+}
 
 func TestOptionResolver_AddOption_ShortReservedOption(t *testing.T) {
 	or := optresolver.OptionResolver{
@@ -109,6 +124,108 @@ func TestOptionResolver_AddOption_Default(t *testing.T) {
 
 	if len(or.Options) != 1 {
 		t.Errorf("expected options count : 1 found %d", len(or.Options))
+	}
+}
+
+func TestOptionResolver_AddOption_ExistingOption(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "Test Resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Default:  "default_value",
+	})
+
+	if err != nil {
+		t.Errorf("should not throw error, found %s", err.Error())
+	}
+
+	if len(or.Options) != 1 {
+		t.Errorf("expected options count : 1 found %d", len(or.Options))
+	}
+
+	err = or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Default:  "default_value",
+	})
+
+	if err == nil {
+		t.Errorf("error should be thrown at this point, expected %s", optresolver.ErrorExistingOption)
+	}
+
+	if len(or.Options) != 1 {
+		t.Errorf("expected options count : 1 found %d", len(or.Options))
+	}
+}
+
+func TestOptionResolver_Help_WithoutOption(t *testing.T) {
+
+	or := optresolver.OptionResolver{
+		Description: "Simple test",
+	}
+
+	expected := "Simple test\n\n===========\n-h    , --help            | Display help\n"
+
+	obtained := captureOutput(or.Help)
+
+	if expected != obtained {
+		t.Errorf("invalid help output expected :\n%s\nfound :\n%s", expected, obtained)
+		t.Logf("expected string length %d | obtained string length %d", len(expected), len(obtained))
+	}
+}
+
+func TestOptionResolver_Help_WithOptions(t *testing.T) {
+
+	or := optresolver.OptionResolver{
+		Description: "Simple test",
+	}
+
+	_ = or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Help:     "A test option",
+	})
+
+	expected := "Simple test\n\n===========\n-t    , --test            | A test option\n\n-h    , --help            | Display help\n"
+
+	obtained := captureOutput(or.Help)
+
+	if expected != obtained {
+		t.Errorf("invalid help output expected :\n%s\nfound :\n%s", expected, obtained)
+		t.Logf("expected string length %d | obtained string length %d", len(expected), len(obtained))
+	}
+}
+
+func TestOptionResolver_Help_WithParticularOptions(t *testing.T) {
+
+	or := optresolver.OptionResolver{
+		Description: "Simple test",
+	}
+
+	_ = or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Help:     "A test option",
+		Default:  "1",
+	})
+
+	_ = or.AddOption(optresolver.Option{
+		Short:    "z",
+		Long:     "zest",
+		Help:     "A zest option",
+		Required:  true,
+	})
+
+	expected := "Simple test\n\n===========\n-t    , --test            |default : 1| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
+
+	obtained := captureOutput(or.Help)
+
+	if expected != obtained {
+		t.Errorf("invalid help output expected :\n%s\nfound :\n%s", expected, obtained)
+		t.Logf("expected string length %d | obtained string length %d", len(expected), len(obtained))
 	}
 }
 

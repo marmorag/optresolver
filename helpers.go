@@ -14,7 +14,7 @@ func (or *OptionResolver) getOpt(value string) (Option, bool) {
 	return Option{}, false
 }
 
-func (or *OptionResolver) hasReqOpts() ([]*Option, bool) {
+func (or *OptionResolver) hasRequiredOptions() ([]*Option, bool) {
 	if len(or.requiredOptions) > 0 {
 		return or.requiredOptions, true
 	}
@@ -22,7 +22,7 @@ func (or *OptionResolver) hasReqOpts() ([]*Option, bool) {
 	return []*Option{}, false
 }
 
-func (or *OptionResolver) hasDefOpts() ([]*Option, bool) {
+func (or *OptionResolver) hasDefaultOptions() ([]*Option, bool) {
 	if len(or.defaultedOptions) > 0 {
 		return or.defaultedOptions, true
 	}
