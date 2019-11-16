@@ -229,6 +229,228 @@ func TestOptionResolver_Help_WithParticularOptions(t *testing.T) {
 	}
 }
 
+func TestOptionResolver_Resolve_Simple_ShortTag(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Type:     optresolver.ValueType,
+		Help:     "",
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name", "-t", "value"}
+
+	expected := map[string]string{}
+	expected["test"] = "value"
+
+	obtained, err := or.Resolve(args)
+
+	value, exist := obtained["test"]
+
+	if !exist {
+		t.Errorf("value should be defined in result map")
+	}
+
+	if value != "value" {
+		t.Errorf("incorrect value, expected : %s obtained : %s", "value", obtained)
+	}
+
+	if len(obtained) != 1 {
+		t.Errorf("invalid length for map result expected : %d, obtained : %d", 1, len(obtained))
+	}
+}
+
+func TestOptionResolver_Resolve_Simple_LongTag(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Type:     optresolver.ValueType,
+		Help:     "",
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name", "--test", "value"}
+
+	expected := map[string]string{}
+	expected["test"] = "value"
+
+	obtained, err := or.Resolve(args)
+
+	value, exist := obtained["test"]
+
+	if !exist {
+		t.Errorf("value should be defined in result map")
+	}
+
+	if value != "value" {
+		t.Errorf("incorrect value, expected : %s obtained : %s", "value", obtained)
+	}
+
+	if len(obtained) != 1 {
+		t.Errorf("invalid length for map result expected : %d, obtained : %d", 1, len(obtained))
+	}
+}
+
+func TestOptionResolver_Resolve_WithDefault_NoValueProvided(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Type:     optresolver.ValueType,
+		Default:  "default_value",
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name"}
+
+	expected := map[string]string{}
+	expected["test"] = "default_value"
+
+	obtained, err := or.Resolve(args)
+
+	value, exist := obtained["test"]
+
+	if !exist {
+		t.Errorf("value should be defined in result map")
+	}
+
+	if value != "default_value" {
+		t.Errorf("incorrect value, expected : %s obtained : %s", "default_value", obtained)
+	}
+
+	if len(obtained) != 1 {
+		t.Errorf("invalid length for map result expected : %d, obtained : %d", 1, len(obtained))
+	}
+}
+
+func TestOptionResolver_Resolve_WithDefault_ValueProvided(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Type:     optresolver.ValueType,
+		Default:  "default_value",
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name", "-t", "value"}
+
+	expected := map[string]string{}
+	expected["test"] = "value"
+
+	obtained, err := or.Resolve(args)
+
+	value, exist := obtained["test"]
+
+	if !exist {
+		t.Errorf("value should be defined in result map")
+	}
+
+	if value != "value" {
+		t.Errorf("incorrect value, expected : %s obtained : %s", "value", obtained)
+	}
+
+	if len(obtained) != 1 {
+		t.Errorf("invalid length for map result expected : %d, obtained : %d", 1, len(obtained))
+	}
+}
+
+func TestOptionResolver_Resolve_WithRequired_NoValueProvided(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Type:     optresolver.ValueType,
+		Required: true,
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name"}
+
+	obtained, err := or.Resolve(args)
+
+	if err == nil {
+		t.Errorf("should throw an error if no value is provided for a required option")
+	}
+
+	if err != nil && err.Error() != fmt.Sprintf(optresolver.ErrorMissingOption, "test") {
+		t.Errorf("expected error : %s", fmt.Sprintf(optresolver.ErrorMissingOption, "test"))
+	}
+
+	_, exist := obtained["test"]
+
+	if exist {
+		t.Errorf("value should not be defined in result map")
+	}
+}
+
+func TestOptionResolver_Resolve_WithRequired_ValueProvided(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short:    "t",
+		Long:     "test",
+		Type:     optresolver.ValueType,
+		Required: true,
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name", "-t", "value"}
+
+	obtained, err := or.Resolve(args)
+
+	if err != nil {
+		t.Errorf("should not thrown error when value is provided")
+	}
+
+	value, exist := obtained["test"]
+
+	if !exist {
+		t.Errorf("value should be defined in result map")
+	}
+
+	if value != "value" {
+		t.Errorf("expected value : %s obtained : %s", "value", value)
+	}
+}
+
 func main() {
 	or := &optresolver.OptionResolver{
 		Options:     nil,

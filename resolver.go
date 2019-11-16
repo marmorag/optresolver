@@ -9,6 +9,7 @@ import (
 
 const ErrorReservedArgument string = "argument h or help is reserved"
 const ErrorExistingOption string = "option %s is already registered"
+const ErrorMissingOption string = "the flag : %s is required"
 
 func (or *OptionResolver) AddOption(opt Option) error{
 	if opt.Short == "h" || opt.Long == "help" {
@@ -66,7 +67,7 @@ func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
 	if requiredOptions, hasRequired := or.hasRequiredOptions(); hasRequired {
 		for _, reqOpt := range requiredOptions {
 			if _, exist := result[reqOpt.Long]; !exist && reqOpt.Type != BoolType {
-				return map[string]string{}, errors.New(fmt.Sprintf("The flag : %s is required", reqOpt.Long))
+				return map[string]string{}, errors.New(fmt.Sprintf(ErrorMissingOption, reqOpt.Long))
 			}
 		}
 	}
