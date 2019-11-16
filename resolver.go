@@ -46,13 +46,13 @@ func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
 			continue
 		}
 
+		if arg == "-h" || arg == "--help" {
+			or.Help()
+			os.Exit(0)
+		}
+
 		// TODO : handle bool type
 		if i % 2 != 0 {
-			if arg == "-h" || arg == "--help" {
-				or.Help()
-				os.Exit(0)
-			}
-
 			currentOption, isKnownOption = or.getOpt(arg)
 
 			if !isKnownOption {
@@ -62,6 +62,8 @@ func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
 			if currentOption.Type == ValueType {
 				result[currentOption.Long] = arg
 			}
+
+			isKnownOption = false
 		}
 	}
 
