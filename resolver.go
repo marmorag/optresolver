@@ -7,9 +7,11 @@ import (
 	"strings"
 )
 
+const ErrorReservedArgument string = "argument h or help is reserved"
+
 func (or *OptionResolver) AddOption(opt Option) error{
 	if opt.Short == "h" || opt.Long == "help" {
-		return errors.New("argument h or help is reserved")
+		return errors.New(ErrorReservedArgument)
 	}
 
 	or.Options = append(or.Options, opt)
