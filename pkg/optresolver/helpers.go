@@ -2,8 +2,8 @@ package optresolver
 
 import "strings"
 
-func getOpt(value string, resolver OptionResolver) (Option, bool) {
-	for _, opt := range resolver.Options {
+func (or *OptionResolver) getOpt(value string) (Option, bool) {
+	for _, opt := range or.Options {
 		cleaned := strings.Replace(value, "-", "", -1)
 
 		if cleaned == opt.Short || cleaned == opt.Long {

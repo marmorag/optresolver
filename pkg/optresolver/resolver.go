@@ -25,51 +25,51 @@ func (or *OptionResolver) AddOption(opt Option) {
 }
 
 func (or *OptionResolver) Parse(args []string) (map[string]string, error) {
-	var currOpt Option
-	var isOpt bool
-	res := make(map[string]string)
+	var currentOption Option
+	var isKnownOption bool
+	result := make(map[string]string)
 
-	for i, value := range args {
+	for i, arg := range args {
 		if i == 0 {
 			continue
 		}
 
 		// TODO : handle bool type
 		if i % 2 != 0 {
-			if value == "-h" || value == "--help" {
+			if arg == "-h" || arg == "--help" {
 				or.Help()
 				os.Exit(0)
 			}
 
-			currOpt, isOpt = getOpt(value, *or)
+			currentOption, isKnownOption = or.getOpt(arg)
 
-			if !isOpt {
-				return map[string]string{}, errors.New(fmt.Sprintf("error : unknown option : %s", value))
+			if !isKnownOption {
+				return map[string]string{}, errors.New(fmt.Sprintf("error : unknown option : %s", arg))
 			}
-		} else if isOpt {
-			if currOpt.Type == ValueType {
-				res[currOpt.Long] = value
+		} else if isKnownOption {
+			if currentOption.Type == ValueType {
+				result[currentOption.Long] = arg
 			}
 		}
 	}
 
-	if reqOpts, req := or.hasReqOpts(); req {
-		for _, reqOpt := range reqOpts {
-			if _, exist := res[reqOpt.Long]; !exist && reqOpt.Type != BoolType {
+	if requiredOptions, hasRequired := or.hasReqOpts(); hasRequired {
+		for _, reqOpt := range requiredOptions {
+			if _, exist := result[reqOpt.Long]; !exist && reqOpt.Type != BoolType {
 				return map[string]string{}, errors.New(fmt.Sprintf("The flag : %s is required", reqOpt.Long))
 			}
 		}
 	}
 
-	if defOpts, def := or.hasDefOpts(); def {
-		for _, defOpt := range defOpts {
-			if _, exist := res[defOpt.Long]; !exist {
-				res[defOpt.Long] = defOpt.Default
+	if defaultedOptions, hasDefaults := or.hasDefOpts(); hasDefaults {
+		for _, defOpt := range defaultedOptions {
+			if _, exist := result[defOpt.Long]; !exist {
+				result[defOpt.Long] = defOpt.Default
 			}
 		}
 	}
 
-	return res, nil
+	return result, nil
 }
 
 func (or *OptionResolver) Help() {
