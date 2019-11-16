@@ -305,6 +305,24 @@ func TestOptionResolver_Resolve_Simple_LongTag(t *testing.T) {
 	}
 }
 
+func TestOptionResolver_Resolve_Simple_UnknownOption(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	args := []string{"prog_name", "-t", "value"}
+
+	obtained, err := or.Resolve(args)
+
+	if err == nil || err.Error() != fmt.Sprintf(optresolver.ErrorUnknownOption, "-t"){
+		t.Errorf("expected error : %s, obtained : %s", fmt.Sprintf(optresolver.ErrorUnknownOption, "-t"), err)
+	}
+
+	if len(obtained) != 0 {
+		t.Errorf("expected map result length to be : %d, obtained : %d", 0, len(obtained))
+	}
+}
+
 func TestOptionResolver_Resolve_WithDefault_NoValueProvided(t *testing.T) {
 	or := optresolver.OptionResolver{
 		Description: "A test resolver",
@@ -449,54 +467,4 @@ func TestOptionResolver_Resolve_WithRequired_ValueProvided(t *testing.T) {
 	if value != "value" {
 		t.Errorf("expected value : %s obtained : %s", "value", value)
 	}
-}
-
-func main() {
-	or := &optresolver.OptionResolver{
-		Options:     nil,
-		Description: "This is a program to test option resolver",
-	}
-
-	or.AddOption(optresolver.Option{
-		Short:    "n",
-		Long:     "name",
-		Required: false,
-		Type:     optresolver.ValueType,
-		Default:  "",
-		Help:     "A name to display",
-	})
-
-	or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Required: false,
-		Type:     optresolver.ValueType,
-		Default:  "default_value",
-		Help:     "A test option",
-	})
-
-	or.AddOption(optresolver.Option{
-		Short:    "r",
-		Long:     "required",
-		Required: true,
-		Type:     optresolver.ValueType,
-		Help:     "A required test option",
-	})
-
-	or.AddOption(optresolver.Option{
-		Short:    "d",
-		Long:     "default",
-		Required: false,
-		Default: "default_value",
-		Help:     "A default value",
-	})
-
-	opt, err := or.Resolve(os.Args)
-
-	if err != nil {
-		fmt.Println(fmt.Sprintf("%s : %s", or.Description, err))
-		os.Exit(1)
-	}
-
-	fmt.Println(opt)
 }

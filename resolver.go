@@ -10,6 +10,7 @@ import (
 const ErrorReservedArgument string = "argument h or help is reserved"
 const ErrorExistingOption string = "option %s is already registered"
 const ErrorMissingOption string = "the flag : %s is required"
+const ErrorUnknownOption = "unknown option : %s"
 
 func (or *OptionResolver) AddOption(opt Option) error{
 	if opt.Short == "h" || opt.Long == "help" {
@@ -55,7 +56,7 @@ func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
 			currentOption, isKnownOption = or.getOpt(arg)
 
 			if !isKnownOption {
-				return map[string]string{}, errors.New(fmt.Sprintf("error : unknown option : %s", arg))
+				return map[string]string{}, errors.New(fmt.Sprintf(ErrorUnknownOption, arg))
 			}
 		} else if isKnownOption {
 			if currentOption.Type == ValueType {
