@@ -1,44 +1,48 @@
-package main
+package optresolver
 
 import (
 	"fmt"
-	"github.com/marmorag/optresolver/pkg/optresolver"
 	"os"
+	"testing"
 )
 
+func TestOptionResolver_AddOption(t *testing.T) {
+
+}
+
 func main() {
-	or := &optresolver.OptionResolver{
+	or := &OptionResolver{
 		Options:     nil,
 		Description: "This is a program to test option resolver",
 	}
 
-	or.AddOption(optresolver.Option{
+	or.AddOption(Option{
 		Short:    "n",
 		Long:     "name",
 		Required: false,
-		Type:optresolver.ValueType,
-		Default: "",
+		Type:     ValueType,
+		Default:  "",
 		Help:     "A name to display",
 	})
 
-	or.AddOption(optresolver.Option{
+	or.AddOption(Option{
 		Short:    "t",
 		Long:     "test",
 		Required: false,
-		Type:optresolver.ValueType,
-		Default: "default_value",
+		Type:     ValueType,
+		Default:  "default_value",
 		Help:     "A test option",
 	})
 
-	or.AddOption(optresolver.Option{
+	or.AddOption(Option{
 		Short:    "r",
 		Long:     "required",
 		Required: true,
-		Type:optresolver.ValueType,
+		Type:     ValueType,
 		Help:     "A required test option",
 	})
 
-	or.AddOption(optresolver.Option{
+	or.AddOption(Option{
 		Short:    "d",
 		Long:     "default",
 		Required: false,
@@ -46,7 +50,7 @@ func main() {
 		Help:     "A default value",
 	})
 
-	opt, err := or.Parse(os.Args)
+	opt, err := or.Resolve(os.Args)
 
 	if err != nil {
 		fmt.Println(fmt.Sprintf("%s : %s", or.Description, err))

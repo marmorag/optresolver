@@ -7,10 +7,9 @@ import (
 	"strings"
 )
 
-func (or *OptionResolver) AddOption(opt Option) {
+func (or *OptionResolver) AddOption(opt Option) error{
 	if opt.Short == "h" || opt.Long == "help" {
-		fmt.Println(fmt.Errorf("argument h or help is reserved"))
-		os.Exit(1)
+		return errors.New("argument h or help is reserved")
 	}
 
 	or.Options = append(or.Options, opt)
@@ -22,9 +21,11 @@ func (or *OptionResolver) AddOption(opt Option) {
 	if opt.Default != "" {
 		or.defaultedOptions = append(or.defaultedOptions, &opt)
 	}
+
+	return nil
 }
 
-func (or *OptionResolver) Parse(args []string) (map[string]string, error) {
+func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
 	var currentOption Option
 	var isKnownOption bool
 	result := make(map[string]string)
