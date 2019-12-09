@@ -28,8 +28,8 @@ func TestOptionResolver_AddOption_ShortReservedOption(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "h",
-		Long:     "test",
+		Short: "h",
+		Long:  "test",
 	})
 
 	if err == nil {
@@ -51,8 +51,8 @@ func TestOptionResolver_AddOption_LongReservedOption(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "help",
+		Short: "t",
+		Long:  "help",
 	})
 
 	if err == nil {
@@ -74,8 +74,8 @@ func TestOptionResolver_AddOption_Simple(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
+		Short: "t",
+		Long:  "test",
 	})
 
 	if err != nil {
@@ -113,9 +113,9 @@ func TestOptionResolver_AddOption_Default(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Default:  "default_value",
+		Short:   "t",
+		Long:    "test",
+		Default: "default_value",
 	})
 
 	if err != nil {
@@ -133,9 +133,9 @@ func TestOptionResolver_AddOption_ExistingOption(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Default:  "default_value",
+		Short:   "t",
+		Long:    "test",
+		Default: "default_value",
 	})
 
 	if err != nil {
@@ -147,9 +147,9 @@ func TestOptionResolver_AddOption_ExistingOption(t *testing.T) {
 	}
 
 	err = or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Default:  "default_value",
+		Short:   "t",
+		Long:    "test",
+		Default: "default_value",
 	})
 
 	if err == nil {
@@ -184,9 +184,9 @@ func TestOptionResolver_Help_WithOptions(t *testing.T) {
 	}
 
 	_ = or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Help:     "A test option",
+		Short: "t",
+		Long:  "test",
+		Help:  "A test option",
 	})
 
 	expected := "Simple test\n\n===========\n-t    , --test            | A test option\n\n-h    , --help            | Display help\n"
@@ -206,17 +206,17 @@ func TestOptionResolver_Help_WithParticularOptions(t *testing.T) {
 	}
 
 	_ = or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Help:     "A test option",
-		Default:  "1",
+		Short:   "t",
+		Long:    "test",
+		Help:    "A test option",
+		Default: "1",
 	})
 
 	_ = or.AddOption(optresolver.Option{
 		Short:    "z",
 		Long:     "zest",
 		Help:     "A zest option",
-		Required:  true,
+		Required: true,
 	})
 
 	expected := "Simple test\n\n===========\n-t    , --test            |default : 1| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
@@ -235,10 +235,10 @@ func TestOptionResolver_Resolve_Simple_ShortTag(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Type:     optresolver.ValueType,
-		Help:     "",
+		Short: "t",
+		Long:  "test",
+		Type:  optresolver.ValueType,
+		Help:  "",
 	})
 
 	if err != nil {
@@ -273,10 +273,10 @@ func TestOptionResolver_Resolve_Simple_LongTag(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Type:     optresolver.ValueType,
-		Help:     "",
+		Short: "t",
+		Long:  "test",
+		Type:  optresolver.ValueType,
+		Help:  "",
 	})
 
 	if err != nil {
@@ -314,7 +314,7 @@ func TestOptionResolver_Resolve_Simple_UnknownOption(t *testing.T) {
 
 	obtained, err := or.Resolve(args)
 
-	if err == nil || err.Error() != fmt.Sprintf(optresolver.ErrorUnknownOption, "-t"){
+	if err == nil || err.Error() != fmt.Sprintf(optresolver.ErrorUnknownOption, "-t") {
 		t.Errorf("expected error : %s, obtained : %s", fmt.Sprintf(optresolver.ErrorUnknownOption, "-t"), err)
 	}
 
@@ -329,10 +329,10 @@ func TestOptionResolver_Resolve_WithDefault_NoValueProvided(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Type:     optresolver.ValueType,
-		Default:  "default_value",
+		Short:   "t",
+		Long:    "test",
+		Type:    optresolver.ValueType,
+		Default: "default_value",
 	})
 
 	if err != nil {
@@ -367,10 +367,10 @@ func TestOptionResolver_Resolve_WithDefault_ValueProvided(t *testing.T) {
 	}
 
 	err := or.AddOption(optresolver.Option{
-		Short:    "t",
-		Long:     "test",
-		Type:     optresolver.ValueType,
-		Default:  "default_value",
+		Short:   "t",
+		Long:    "test",
+		Type:    optresolver.ValueType,
+		Default: "default_value",
 	})
 
 	if err != nil {

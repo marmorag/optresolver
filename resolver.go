@@ -12,7 +12,7 @@ const ErrorExistingOption string = "option %s is already registered"
 const ErrorMissingOption string = "the flag : %s is required"
 const ErrorUnknownOption = "unknown option : %s"
 
-func (or *OptionResolver) AddOption(opt Option) error{
+func (or *OptionResolver) AddOption(opt Option) error {
 	if opt.Short == "h" || opt.Long == "help" {
 		return errors.New(ErrorReservedArgument)
 	}
@@ -52,7 +52,7 @@ func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
 		}
 
 		// TODO : handle bool type
-		if i % 2 != 0 {
+		if i%2 != 0 {
 			currentOption, isKnownOption = or.getOpt(arg)
 
 			if !isKnownOption {
@@ -89,7 +89,7 @@ func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
 func (or *OptionResolver) Help() {
 	fmt.Printf("%s\n\n", or.Description)
 	fmt.Println(strings.Repeat("=", len(or.Description)))
-	for _, option := range or.Options  {
+	for _, option := range or.Options {
 		var reqString string
 		var defString string
 

@@ -4,22 +4,22 @@ type OptionType int
 
 const (
 	ValueType OptionType = iota
-	BoolType OptionType = iota
+	BoolType  OptionType = iota
 )
 
 type Option struct {
-	Short string
-	Long string
+	Short    string
+	Long     string
 	Required bool
-	Type OptionType
-	Default string
-	Help string
+	Type     OptionType
+	Default  string
+	Help     string
 }
 
 type OptionResolver struct {
 	Options     []Option
 	Description string
 
-	requiredOptions []*Option
+	requiredOptions  []*Option
 	defaultedOptions []*Option
 }
