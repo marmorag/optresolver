@@ -10,7 +10,31 @@ import (
 const ErrorReservedArgument string = "argument h or help is reserved"
 const ErrorExistingOption string = "option %s is already registered"
 const ErrorMissingOption string = "the flag : %s is required"
-const ErrorUnknownOption = "unknown option : %s"
+const ErrorUnknownOption string = "unknown option : %s"
+
+type OptionType int
+
+const (
+	ValueType OptionType = iota
+	BoolType  OptionType = iota
+)
+
+type Option struct {
+	Short    string
+	Long     string
+	Required bool
+	Type     OptionType
+	Default  interface{}
+	Help     string
+}
+
+type OptionResolver struct {
+	Options     []Option
+	Description string
+
+	requiredOptions  []*Option
+	defaultedOptions []*Option
+}
 
 func (or *OptionResolver) AddOption(opt Option) error {
 	if opt.Short == "h" || opt.Long == "help" {
@@ -110,4 +134,32 @@ func (or *OptionResolver) Help() {
 	}
 
 	fmt.Println(fmt.Sprintf("%-6s, %-17s | %s", "-h", "--help", "Display help"))
+}
+
+func (or *OptionResolver) getOpt(value string) (Option, bool) {
+	cleaned := strings.Replace(value, "-", "", -1)
+
+	for _, opt := range or.Options {
+		if cleaned == opt.Short || cleaned == opt.Long {
+			return opt, true
+		}
+	}
+
+	return Option{}, false
+}
+
+func (or *OptionResolver) hasRequiredOptions() ([]*Option, bool) {
+	if len(or.requiredOptions) > 0 {
+		return or.requiredOptions, true
+	}
+
+	return []*Option{}, false
+}
+
+func (or *OptionResolver) hasDefaultOptions() ([]*Option, bool) {
+	if len(or.defaultedOptions) > 0 {
+		return or.defaultedOptions, true
+	}
+
+	return []*Option{}, false
 }
