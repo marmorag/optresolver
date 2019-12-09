@@ -12,7 +12,7 @@ type Option struct {
 	Long     string
 	Required bool
 	Type     OptionType
-	Default  string
+	Default  interface{}
 	Help     string
 }
 
