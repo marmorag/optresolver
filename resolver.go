@@ -36,41 +36,42 @@ func (or *OptionResolver) AddOption(opt Option) error {
 	return nil
 }
 
-func (or *OptionResolver) Resolve(args []string) (map[string]string, error) {
+func (or *OptionResolver) Resolve(args []string) (map[string]interface{}, error) {
 	var currentOption Option
 	var isKnownOption bool
-	result := make(map[string]string)
+	result := make(map[string]interface{})
+	skipArg := false
 
-	for i, arg := range args {
-		if i == 0 {
-			continue
-		}
+	mappedArgs := args[1:]
 
+	for i, arg := range mappedArgs {
 		if arg == "-h" || arg == "--help" {
 			or.Help()
 			os.Exit(0)
 		}
 
-		// TODO : handle bool type
-		if i%2 != 0 {
+		if !skipArg {
 			currentOption, isKnownOption = or.getOpt(arg)
 
-			if !isKnownOption {
-				return map[string]string{}, errors.New(fmt.Sprintf(ErrorUnknownOption, arg))
+			if isKnownOption {
+				if currentOption.Type == ValueType {
+					result[currentOption.Long] = mappedArgs[i+1]
+					skipArg = true
+				} else if currentOption.Type == BoolType {
+					result[currentOption.Long] = true
+				}
+			} else {
+				return make(map[string]interface{}), errors.New(fmt.Sprintf(ErrorUnknownOption, arg))
 			}
-		} else if isKnownOption {
-			if currentOption.Type == ValueType {
-				result[currentOption.Long] = arg
-			}
-
-			isKnownOption = false
+		} else {
+			skipArg = false
 		}
 	}
 
 	if requiredOptions, hasRequired := or.hasRequiredOptions(); hasRequired {
 		for _, reqOpt := range requiredOptions {
-			if _, exist := result[reqOpt.Long]; !exist && reqOpt.Type != BoolType {
-				return map[string]string{}, errors.New(fmt.Sprintf(ErrorMissingOption, reqOpt.Long))
+			if _, exist := result[reqOpt.Long]; !exist {
+				return make(map[string]interface{}), errors.New(fmt.Sprintf(ErrorMissingOption, reqOpt.Long))
 			}
 		}
 	}
@@ -99,7 +100,7 @@ func (or *OptionResolver) Help() {
 			reqString = ""
 		}
 
-		if option.Default != "" {
+		if option.Default != nil {
 			defString = fmt.Sprintf("|default : %s", option.Default)
 		} else {
 			defString = ""
