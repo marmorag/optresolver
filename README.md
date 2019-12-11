@@ -13,9 +13,7 @@ import 	(
 
 func main() {
     // create an OptionResolver
-    resolver := optresolver.OptionResolver{
-    		Description: "A text to describe your package",
-    }
+    resolver := optresolver.NewOptionResolver("Package name", "A description of what your package is doing")
     
     // you must define available Option before attempting to resolve them
     _ = resolver.AddOption(optresolver.Option{
@@ -55,3 +53,35 @@ func main() {
     // options["printchain"] = true
 }
 ```
+
+### Specific cases :
+
+#### Help
+The package disalow the use of `h` or `help` as a short or long flag identifier, 
+indeed the package provide a auto help feature. You can call it manually with :
+```
+resolver := optresolver.NewOptionResolver("Package", "A description")
+resolver.Help()
+```
+
+Or it is called automatically after user provide `-h` or `--help` as cli flag.
+Once called the program exit with return code equal `0`
+
+#### AsciiArt
+The package allow you to print your package name as an Ascii Art string
+You can enable it with : 
+```
+resolver := optresolver.NewOptionResolver("Package", "A description")
+resolver.EnableAsciiArt()
+```
+You can see [this repository](https://github.com/common-nighthawk/go-figure) to know more
+
+By default we use the `cybermedium` font which display like : 
+
+```
+____ ___  ___ ____ ____ ____ ____ _    _  _ ____ ____
+|  | |__]  |  |__/ |___ [__  |  | |    |  | |___ |__/
+|__| |     |  |  \ |___ ___] |__| |___  \/  |___ |  \
+```
+
+But you can pass any supported font as argument to the `SetAsciiArtFont` method

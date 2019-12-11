@@ -32,11 +32,12 @@ type Option struct {
 type OptionResolver struct {
 	Options     []Option
 	Description string
-	Name string
-	GenerateAscii bool
+	Name        string
 
+	generateAscii    bool
 	requiredOptions  []*Option
 	defaultedOptions []*Option
+	asciiFont        string
 }
 
 func NewOptionResolver(name string, description string) *OptionResolver {
@@ -44,14 +45,21 @@ func NewOptionResolver(name string, description string) *OptionResolver {
 		Options:          make([]Option, 0),
 		Name:             name,
 		Description:      description,
-		GenerateAscii:    false,
+		generateAscii:    false,
 		requiredOptions:  make([]*Option, 0),
 		defaultedOptions: make([]*Option, 0),
 	}
 }
 
 func (or *OptionResolver) EnableAsciiArt()  {
-	or.GenerateAscii = true
+	or.generateAscii = true
+	or.asciiFont = "cybermedium"
+}
+
+func (or *OptionResolver) SetAsciiArtFont(font string)  {
+	if font != "" {
+		or.asciiFont = font
+	}
 }
 
 func (or *OptionResolver) AddOption(opt Option) error {
@@ -131,8 +139,8 @@ func (or *OptionResolver) Resolve(args []string) (map[string]interface{}, error)
 
 func (or *OptionResolver) Help() {
 	var name string
-	if or.GenerateAscii == true {
-		asciiArt := figure.NewFigure(or.Name, "cybermedium", true)
+	if or.generateAscii == true {
+		asciiArt := figure.NewFigure(or.Name, or.asciiFont, true)
 		name = asciiArt.String()
 	} else {
 		name = or.Name
