@@ -199,7 +199,7 @@ func TestOptionResolver_Help_WithOptions(t *testing.T) {
 	}
 }
 
-func TestOptionResolver_Help_WithParticularOptions(t *testing.T) {
+func TestOptionResolver_Help_WithParticularOptions_ValueType(t *testing.T) {
 
 	or := optresolver.OptionResolver{
 		Description: "Simple test",
@@ -220,6 +220,37 @@ func TestOptionResolver_Help_WithParticularOptions(t *testing.T) {
 	})
 
 	expected := "Simple test\n\n===========\n-t    , --test            |default : 1| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
+
+	obtained := captureOutput(or.Help)
+
+	if expected != obtained {
+		t.Errorf("invalid help output expected :\n%s\nfound :\n%s", expected, obtained)
+		t.Logf("expected string length %d | obtained string length %d", len(expected), len(obtained))
+	}
+}
+
+func TestOptionResolver_Help_WithParticularOptions_BoolType(t *testing.T) {
+
+	or := optresolver.OptionResolver{
+		Description: "Simple test",
+	}
+
+	_ = or.AddOption(optresolver.Option{
+		Short:   "t",
+		Long:    "test",
+		Help:    "A test option",
+		Type:    optresolver.BoolType,
+		Default: false,
+	})
+
+	_ = or.AddOption(optresolver.Option{
+		Short:    "z",
+		Long:     "zest",
+		Help:     "A zest option",
+		Required: true,
+	})
+
+	expected := "Simple test\n\n===========\n-t    , --test            |default : false| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
 
 	obtained := captureOutput(or.Help)
 
@@ -318,11 +349,11 @@ func TestOptionResolver_Resolve_Simple_OneNotSet_ShortTag_ValueType(t *testing.T
 	})
 
 	err = or.AddOption(optresolver.Option{
-		Short: "b",
-		Long:  "best",
-		Type:  optresolver.ValueType,
+		Short:    "b",
+		Long:     "best",
+		Type:     optresolver.ValueType,
 		Required: false,
-		Help:  "",
+		Help:     "",
 	})
 
 	if err != nil {
@@ -440,11 +471,11 @@ func TestOptionResolver_Resolve_Simple_OneNotSet_ShortTag_BoolType(t *testing.T)
 	})
 
 	err = or.AddOption(optresolver.Option{
-		Short: "b",
-		Long:  "best",
-		Type:  optresolver.BoolType,
+		Short:    "b",
+		Long:     "best",
+		Type:     optresolver.BoolType,
 		Required: false,
-		Help:  "",
+		Help:     "",
 	})
 
 	if err != nil {

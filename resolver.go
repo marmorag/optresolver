@@ -125,7 +125,11 @@ func (or *OptionResolver) Help() {
 		}
 
 		if option.Default != nil {
-			defString = fmt.Sprintf("|default : %s", option.Default)
+			if option.Type == ValueType {
+				defString = fmt.Sprintf("|default : %s", option.Default)
+			} else if option.Type == BoolType {
+				defString = fmt.Sprintf("|default : %v", option.Default)
+			}
 		} else {
 			defString = ""
 		}
