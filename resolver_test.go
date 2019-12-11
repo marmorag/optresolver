@@ -162,12 +162,9 @@ func TestOptionResolver_AddOption_ExistingOption(t *testing.T) {
 }
 
 func TestOptionResolver_Help_WithoutOption(t *testing.T) {
+	or := optresolver.NewOptionResolver("Test", "Simple test")
 
-	or := optresolver.OptionResolver{
-		Description: "Simple test",
-	}
-
-	expected := "Simple test\n\n===========\n-h    , --help            | Display help\n"
+	expected := "Test\nSimple test\n\n===========\n-h    , --help            | Display help\n"
 
 	obtained := captureOutput(or.Help)
 
@@ -178,10 +175,7 @@ func TestOptionResolver_Help_WithoutOption(t *testing.T) {
 }
 
 func TestOptionResolver_Help_WithOptions(t *testing.T) {
-
-	or := optresolver.OptionResolver{
-		Description: "Simple test",
-	}
+	or := optresolver.NewOptionResolver("Test", "Simple test")
 
 	_ = or.AddOption(optresolver.Option{
 		Short: "t",
@@ -189,7 +183,7 @@ func TestOptionResolver_Help_WithOptions(t *testing.T) {
 		Help:  "A test option",
 	})
 
-	expected := "Simple test\n\n===========\n-t    , --test            | A test option\n\n-h    , --help            | Display help\n"
+	expected := "Test\nSimple test\n\n===========\n-t    , --test            | A test option\n\n-h    , --help            | Display help\n"
 
 	obtained := captureOutput(or.Help)
 
@@ -200,10 +194,7 @@ func TestOptionResolver_Help_WithOptions(t *testing.T) {
 }
 
 func TestOptionResolver_Help_WithParticularOptions_ValueType(t *testing.T) {
-
-	or := optresolver.OptionResolver{
-		Description: "Simple test",
-	}
+	or := optresolver.NewOptionResolver("Test", "Simple test")
 
 	_ = or.AddOption(optresolver.Option{
 		Short:   "t",
@@ -219,7 +210,7 @@ func TestOptionResolver_Help_WithParticularOptions_ValueType(t *testing.T) {
 		Required: true,
 	})
 
-	expected := "Simple test\n\n===========\n-t    , --test            |default : 1| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
+	expected := "Test\nSimple test\n\n===========\n-t    , --test            |default : 1| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
 
 	obtained := captureOutput(or.Help)
 
@@ -230,10 +221,7 @@ func TestOptionResolver_Help_WithParticularOptions_ValueType(t *testing.T) {
 }
 
 func TestOptionResolver_Help_WithParticularOptions_BoolType(t *testing.T) {
-
-	or := optresolver.OptionResolver{
-		Description: "Simple test",
-	}
+	or := optresolver.NewOptionResolver("Test", "Simple test")
 
 	_ = or.AddOption(optresolver.Option{
 		Short:   "t",
@@ -250,7 +238,7 @@ func TestOptionResolver_Help_WithParticularOptions_BoolType(t *testing.T) {
 		Required: true,
 	})
 
-	expected := "Simple test\n\n===========\n-t    , --test            |default : false| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
+	expected := "Test\nSimple test\n\n===========\n-t    , --test            |default : false| A test option\n\n-z    , --zest            |required| A zest option\n\n-h    , --help            | Display help\n"
 
 	obtained := captureOutput(or.Help)
 

@@ -3,6 +3,7 @@ package optresolver
 import (
 	"errors"
 	"fmt"
+	"github.com/common-nighthawk/go-figure"
 	"os"
 	"strings"
 )
@@ -31,9 +32,26 @@ type Option struct {
 type OptionResolver struct {
 	Options     []Option
 	Description string
+	Name string
+	GenerateAscii bool
 
 	requiredOptions  []*Option
 	defaultedOptions []*Option
+}
+
+func NewOptionResolver(name string, description string) *OptionResolver {
+	return &OptionResolver{
+		Options:          make([]Option, 0),
+		Name:             name,
+		Description:      description,
+		GenerateAscii:    false,
+		requiredOptions:  make([]*Option, 0),
+		defaultedOptions: make([]*Option, 0),
+	}
+}
+
+func (or *OptionResolver) EnableAsciiArt()  {
+	or.GenerateAscii = true
 }
 
 func (or *OptionResolver) AddOption(opt Option) error {
@@ -112,6 +130,15 @@ func (or *OptionResolver) Resolve(args []string) (map[string]interface{}, error)
 }
 
 func (or *OptionResolver) Help() {
+	var name string
+	if or.GenerateAscii == true {
+		asciiArt := figure.NewFigure(or.Name, "cybermedium", true)
+		name = asciiArt.String()
+	} else {
+		name = or.Name
+	}
+
+	fmt.Printf("%s\n", name)
 	fmt.Printf("%s\n\n", or.Description)
 	fmt.Println(strings.Repeat("=", len(or.Description)))
 	for _, option := range or.Options {
