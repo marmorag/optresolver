@@ -229,7 +229,7 @@ func TestOptionResolver_Help_WithParticularOptions(t *testing.T) {
 	}
 }
 
-func TestOptionResolver_Resolve_Simple_ShortTag_ValuType(t *testing.T) {
+func TestOptionResolver_Resolve_Simple_ShortTag_ValueType(t *testing.T) {
 	or := optresolver.OptionResolver{
 		Description: "A test resolver",
 	}
@@ -284,6 +284,52 @@ func TestOptionResolver_Resolve_Simple_LongTag_ValueType(t *testing.T) {
 	}
 
 	args := []string{"prog_name", "--test", "value"}
+
+	expected := map[string]string{}
+	expected["test"] = "value"
+
+	obtained, err := or.Resolve(args)
+
+	value, exist := obtained["test"]
+
+	if !exist {
+		t.Errorf("value should be defined in result map")
+	}
+
+	if value != "value" {
+		t.Errorf("incorrect value, expected : %s obtained : %s", "value", obtained)
+	}
+
+	if len(obtained) != 1 {
+		t.Errorf("invalid length for map result expected : %d, obtained : %d", 1, len(obtained))
+	}
+}
+
+func TestOptionResolver_Resolve_Simple_OneNotSet_ShortTag_ValueType(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short: "t",
+		Long:  "test",
+		Type:  optresolver.ValueType,
+		Help:  "",
+	})
+
+	err = or.AddOption(optresolver.Option{
+		Short: "b",
+		Long:  "best",
+		Type:  optresolver.ValueType,
+		Required: false,
+		Help:  "",
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name", "-t", "value"}
 
 	expected := map[string]string{}
 	expected["test"] = "value"
@@ -363,6 +409,52 @@ func TestOptionResolver_Resolve_Simple_LongTag_BoolType(t *testing.T) {
 
 	expected := make(map[string]interface{})
 	expected["test"] = "value"
+
+	obtained, err := or.Resolve(args)
+
+	value, exist := obtained["test"]
+
+	if !exist {
+		t.Errorf("value should be defined in result map")
+	}
+
+	if value != true {
+		t.Errorf("incorrect value, expected : %s obtained : %s", "value", obtained)
+	}
+
+	if len(obtained) != 1 {
+		t.Errorf("invalid length for map result expected : %d, obtained : %d", 1, len(obtained))
+	}
+}
+
+func TestOptionResolver_Resolve_Simple_OneNotSet_ShortTag_BoolType(t *testing.T) {
+	or := optresolver.OptionResolver{
+		Description: "A test resolver",
+	}
+
+	err := or.AddOption(optresolver.Option{
+		Short: "t",
+		Long:  "test",
+		Type:  optresolver.BoolType,
+		Help:  "",
+	})
+
+	err = or.AddOption(optresolver.Option{
+		Short: "b",
+		Long:  "best",
+		Type:  optresolver.BoolType,
+		Required: false,
+		Help:  "",
+	})
+
+	if err != nil {
+		t.Errorf("unexpected error at this point")
+	}
+
+	args := []string{"prog_name", "-t"}
+
+	expected := make(map[string]interface{})
+	expected["test"] = true
 
 	obtained, err := or.Resolve(args)
 

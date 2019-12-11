@@ -53,7 +53,7 @@ func (or *OptionResolver) AddOption(opt Option) error {
 		or.requiredOptions = append(or.requiredOptions, &opt)
 	}
 
-	if opt.Default != "" {
+	if opt.Default != nil {
 		or.defaultedOptions = append(or.defaultedOptions, &opt)
 	}
 
